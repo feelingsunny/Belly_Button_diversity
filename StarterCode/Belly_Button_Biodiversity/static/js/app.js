@@ -32,42 +32,75 @@ function buildMetadata(sample) {
 function buildCharts(sample) {
 
     // @TODO: Use `d3.json` to fetch the sample data for the plots
-    d3.json(`/samples/${sample}`).then(function(sampleData) {
-        console.log(sampleData);
+
+    d3.json(`/samples/${sample}`).then(function(Data) {
+        console.log(Data);
 
         // @TODO: Build a Bubble Chart using the sample data
+        var Trace1 = {
+            x: Data.otu_ids,
+            y: Data.sample_values,
+            text: Data.otu_labels,
+            mode: 'markers',
+            marker: {
+                size: Data.sample_values,
+                color: Data.otu_ids,
+                colorscale: 'Earth'
+            }
+        };
+        var Data = [Trace1]
+
+        var bubbleLayout = [{
+            margin: { t: 0 },
+            hovermode: 'closest',
+        }];
+
+        Plotly.newPlot('bubble', Data, bubbleLayout);
 
         // @TODO: Build a Pie Chart
         // HINT: You will need to use slice() to grab the top 10 sample_values,
         // otu_ids, and labels (10 each).
+
+        d3.json(`/samples/${sample}`).then(function(Data) {
+
+            var pieData = [{
+                values: Data.sample_values.slice(0, 10),
+                labels: Data.otu_ids.slice(0, 10),
+                hovertext: Data.otu_labels.slice(0, 10),
+                type: 'pie'
+            }];
+
+            Plotly.newPlot('pie', pieData);
+        });
     });
 
-    function init() {
-        // Grab a reference to the dropdown select element
-        var selector = d3.select("#selDataset");
-
-        // Use the list of sample names to populate the select options
-        d3.json("/names").then((sampleNames) => {
-            sampleNames.forEach((sample) => {
-                selector
-                    .append("option")
-                    .text(sample)
-                    .property("value", sample);
-            });
-
-            // Use the first sample from the list to build the initial plots
-            const firstSample = sampleNames[0];
-            buildCharts(firstSample);
-            buildMetadata(firstSample);
-        });
-    }
-
-    function optionChanged(newSample) {
-        // Fetch new data each time a new sample is selected
-        buildCharts(newSample);
-        buildMetadata(newSample);
-    }
-
-    // Initialize the dashboard
-    init();
 }
+
+function init() {
+    // Grab a reference to the dropdown select element
+    var selector = d3.select("#selDataset");
+
+    // Use the list of sample names to populate the select options
+    d3.json("/names").then((sampleNames) => {
+        sampleNames.forEach((sample) => {
+            selector
+                .append("option")
+                .text(sample)
+                .property("value", sample);
+        });
+
+        // Use the first sample from the list to build the initial plots
+        const firstSample = sampleNames[0];
+        buildCharts(firstSample);
+        buildMetadata(firstSample);
+    });
+}
+
+function optionChanged(newSample) {
+    // Fetch new data each time a new sample is selected
+    buildCharts(newSample);
+    buildMetadata(newSample);
+}
+
+// Initialize the dashboard
+init();
