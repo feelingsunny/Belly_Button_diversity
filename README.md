@@ -1,5 +1,7 @@
 # Belly Button Biodiversity
 
+![15-Interactive-Visualizations-and-Dashboards_Homework_Images_bacteria_by_filterforgedotcom](https://user-images.githubusercontent.com/49255104/71667931-af3c5880-2d2c-11ea-8811-ebda622363d5.jpg)
+
 Interactive dashboard to explore belly button biodiversity by sample in the dataset.
 
 Use Plotly.js to build interactive charts for your dashboard.
